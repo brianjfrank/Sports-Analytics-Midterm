@@ -4,7 +4,7 @@ Midterm Project for Sports Analytics class
 # NFL Age and Performance Analysis Summary
 
 ## Introduction
-The study explores the correlation between age and player performance in the National Football League (NFL) from 2014 to 2022. By using Fantasy Points as a proxy for performance, the analysis aims to determine when players are at their peak and when they experience a decline due to age. The insights gained can guide team front offices in drafting players to optimize performance.
+The study explores the correlation between age and player performance in the National Football League (NFL) from 2014 to 2022. By using Fantasy Points as a proxy for performance, the analysis aims to determine when players are at their peak and when they experience a decline due to age. **Notably, survivorship bias plays a critical role in shaping the conclusions drawn in this study.**
 
 ## Data Collection and Cleaning
 Player performance data was sourced from FantasyPros.com, with Madden data from Maddenratings.weebly.com and age data from pro-football-reference.com. Extensive cleaning involved categorizing positions, calculating percentile grades, and merging offensive and defensive player data.
@@ -12,7 +12,7 @@ Player performance data was sourced from FantasyPros.com, with Madden data from 
 ## Key Findings:
 ### Quarterbacks
 - Experienced quarterbacks, around 32 or 38 years old, showcase optimal performance.
-- Small sample size of 40+ year old quarterbacks inflates the graph.
+- Small sample size of 40+ year old quarterbacks inflates the graph, **highlighting the impact of survivorship bias.**
 
 ### Running Backs
 - Running backs' value decreases after the early twenties, making them ideal additions near last in team building.
@@ -39,7 +39,8 @@ Player performance data was sourced from FantasyPros.com, with Madden data from 
 - Drafting order recommendations based on position maturity: Quarterbacks and Offensive Linemen early, followed by other positions in a strategic timeline.
 
 ## Limitations and Future Research
-- Survivorship bias, validity of Fantasy points as a performance proxy, and the need for more seasons of data are acknowledged limitations.
+- **Survivorship bias is acknowledged as a critical limitation**, impacting the data's validity and shaping the study's conclusions.
+- Validity of Fantasy points as a performance proxy and the need for more seasons of data are also acknowledged limitations.
 - Future research could benefit from more quality data, plotting average fantasy points against median points, and exploring applicability to other sports.
 
 For a detailed understanding of the analysis and findings, refer to the complete project documentation.
