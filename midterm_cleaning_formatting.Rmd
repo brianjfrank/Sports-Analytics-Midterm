@@ -1,0 +1,604 @@
+---
+title: "Midterm Project"
+output: 
+---
+importing data
+```{r}
+#loading in madden data
+library(dplyr)
+m14 = read.csv("Madden_14.csv")
+m15 = read.csv("Madden_15.csv")
+m16 = read.csv("Madden_16.csv")
+m17 = read.csv("Madden_17.csv")
+m18 = read.csv("Madden_18.csv")
+m19 = read.csv("Madden_19_1.csv")
+m20 = read.csv("Madden_20.csv")
+m21 = read.csv("Madden_21.csv")
+m22 = read.csv("Madden_22.csv")
+```
+
+
+Removing all useless columns
+```{r}
+#unfortunately have to clean data by hand
+m14 = m14[, c("First.Name", "Last.Name", "Position", "Overall")]
+m15 = m15[, c("First.Name", "Last.Name", "Position", "Overall")]
+m16 = m16[, c("First.Name", "Last.Name", "Position", "OVR")]
+colnames(m16)[colnames(m16) == 'OVR'] <- 'Overall'
+
+m17 = m17[, c("First.Name", "Last.Name", "Position", "Overall")]
+m18 = m18[, c("First.Name", "Last.Name", "Position", "Overall")]
+m19 = m19[, c("Name", "Position", "Overall")]
+m20 = m20[, c("Name", "Position", "Overall")]
+m21 = m21[, c("Name", "Position", "Overall")]
+m22 = m22[, c("FirstName", "LastName", "Position", "OverallRating")]
+```
+
+
+
+making O-line data frames
+```{r}
+inside = c("LG", "C", "RG")
+outside = c("LT", "RT")
+i_o_14 = m14[m14$Position %in% inside, ]
+i_o_15 = m15[m15$Position %in% inside, ]
+i_o_16 = m16[m16$Position %in% inside, ]
+i_o_17 = m17[m17$Position %in% inside, ]
+i_o_18 = m18[m18$Position %in% inside, ]
+i_o_19 = m19[m19$Position %in% inside, ]
+i_o_20 = m20[m20$Position %in% inside, ]
+i_o_21 = m21[m21$Position %in% inside, ]
+i_o_22 = m22[m22$Position %in% inside, ]
+
+o_o_14 = m14[m14$Position %in% outside, ]
+o_o_15 = m15[m15$Position %in% outside, ]
+o_o_16 = m16[m16$Position %in% outside, ]
+o_o_17 = m17[m17$Position %in% outside, ]
+o_o_18 = m18[m18$Position %in% outside, ]
+o_o_19 = m19[m19$Position %in% outside, ]
+o_o_20 = m20[m20$Position %in% outside, ]
+o_o_21 = m21[m21$Position %in% outside, ]
+o_o_22 = m22[m22$Position %in% outside, ]
+
+```
+
+
+percentiles for offensive line
+```{r}
+labels = c(0,1,2,3,4,5,6,7,8,9)
+
+holder = (transform(i_o_14$Overall, percentile = findInterval(i_o_14$Overall,quantile(i_o_14$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_14$Percentile = holder$percentile
+
+holder = (transform(o_o_14$Overall, percentile = findInterval(o_o_14$Overall, quantile(o_o_14$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_14$Percentile = holder$percentile
+
+
+holder = (transform(i_o_15$Overall, percentile = findInterval(i_o_15$Overall,quantile(i_o_15$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_15$Percentile = holder$percentile
+
+holder = (transform(o_o_15$Overall, percentile = findInterval(o_o_15$Overall, quantile(o_o_15$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_15$Percentile = holder$percentile
+
+
+holder = (transform(i_o_16$Overall, percentile = findInterval(i_o_16$Overall,quantile(i_o_16$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_16$Percentile = holder$percentile
+
+holder = (transform(o_o_16$Overall, percentile = findInterval(o_o_16$Overall, quantile(o_o_16$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_16$Percentile = holder$percentile
+
+
+holder = (transform(i_o_17$Overall, percentile = findInterval(i_o_17$Overall,quantile(i_o_17$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_17$Percentile = holder$percentile
+
+holder = (transform(o_o_17$Overall, percentile = findInterval(o_o_17$Overall, quantile(o_o_17$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_17$Percentile = holder$percentile
+
+
+holder = (transform(i_o_18$Overall, percentile = findInterval(i_o_18$Overall,quantile(i_o_18$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_18$Percentile = holder$percentile
+
+holder = (transform(o_o_18$Overall, percentile = findInterval(o_o_18$Overall, quantile(o_o_18$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_18$Percentile = holder$percentile
+
+
+holder = (transform(i_o_19$Overall, percentile = findInterval(i_o_19$Overall,quantile(i_o_19$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_19$Percentile = holder$percentile
+
+holder = (transform(o_o_19$Overall, percentile = findInterval(o_o_19$Overall, quantile(o_o_19$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_19$Percentile = holder$percentile
+
+
+holder = (transform(i_o_20$Overall, percentile = findInterval(i_o_20$Overall,quantile(i_o_20$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_20$Percentile = holder$percentile
+
+holder = (transform(o_o_20$Overall, percentile = findInterval(o_o_20$Overall, quantile(o_o_20$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_20$Percentile = holder$percentile
+
+
+holder = (transform(i_o_21$Overall, percentile = findInterval(i_o_21$Overall,quantile(i_o_21$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_21$Percentile = holder$percentile
+
+holder = (transform(o_o_21$Overall, percentile = findInterval(o_o_21$Overall, quantile(o_o_21$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_21$Percentile = holder$percentile
+
+
+holder = (transform(i_o_22$Overall, percentile = findInterval(i_o_22$Overall,quantile(i_o_22$Overall, probs = seq(0, .9, by = .1)))))-1
+i_o_22$Percentile = holder$percentile
+
+holder = (transform(o_o_22$Overall, percentile = findInterval(o_o_22$Overall, quantile(o_o_22$Overall, probs = seq(0, .9, by = .1)))))-1
+o_o_22$Percentile = holder$percentile
+
+```
+
+
+FIltering out non defensive line
+```{r}
+#filtering out non d-line
+inside_line = "DT"
+outside_line = c("LE", "RE")
+
+inside14 = m14[m14$Position %in% inside_line, ]
+outside14 = m14[m14$Position %in% outside_line, ]
+
+inside15 = m15[m15$Position %in% inside_line, ]
+outside15 = m15[m15$Position %in% outside_line, ]
+
+inside16 = m16[m16$Position %in% inside_line, ]
+outside16 = m16[m16$Position %in% outside_line, ]
+
+inside17 = m17[m17$Position %in% inside_line, ]
+outside17 = m17[m17$Position %in% outside_line, ]
+
+inside18 = m18[m18$Position %in% inside_line, ]
+outside18 = m18[m18$Position %in% outside_line, ]
+
+inside19 = m19[m19$Position %in% inside_line, ]
+outside19 = m19[m19$Position %in% outside_line, ]
+
+inside20 = m20[m20$Position %in% inside_line, ]
+outside20 = m20[m20$Position %in% outside_line, ]
+
+inside21 = m21[m21$Position %in% inside_line, ]
+outside21 = m21[m21$Position %in% outside_line, ]
+
+inside22 = m22[m22$Position %in% inside_line, ]
+outside22 = m22[m22$Position %in% outside_line, ]
+```
+
+```{r}
+adding percentiles to d-line
+labels = c(0,1,2,3,4,5,6,7,8,9)
+
+inside14$Percentile = (transform(inside14$Overall, percentile = findInterval(inside14$Overall, quantile(inside14$Overall, probs = seq(0, .9, by = .1)))))-1
+outside14$Percentile = (transform(outside14$Overall, percentile = findInterval(outside14$Overall, quantile(outside14$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside15$Percentile = (transform(inside15$Overall, percentile = findInterval(inside15$Overall, quantile(inside15$Overall, probs = seq(0, .9, by = .1)))))-1
+outside15$Percentile = (transform(outside15$Overall, percentile = findInterval(outside15$Overall, quantile(outside15$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside16$Percentile = (transform(inside16$Overall, percentile = findInterval(inside16$Overall, quantile(inside16$Overall, probs = seq(0, .9, by = .1)))))-1
+outside16$Percentile = (transform(outside16$Overall, percentile = findInterval(outside16$Overall, quantile(outside16$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside17$Percentile = (transform(inside17$Overall, percentile = findInterval(inside17$Overall, quantile(inside17$Overall, probs = seq(0, .9, by = .1)))))-1
+outside17$Percentile = (transform(outside17$Overall, percentile = findInterval(outside17$Overall, quantile(outside17$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside18$Percentile = (transform(inside18$Overall, percentile = findInterval(inside18$Overall, quantile(inside18$Overall, probs = seq(0, .9, by = .1)))))-1
+outside18$Percentile = (transform(outside18$Overall, percentile = findInterval(outside18$Overall, quantile(outside18$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside19$Percentile = (transform(inside19$Overall, percentile = findInterval(inside19$Overall, quantile(inside19$Overall, probs = seq(0, .9, by = .1)))))-1
+outside19$Percentile = (transform(outside19$Overall, percentile = findInterval(outside19$Overall, quantile(outside19$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside20$Percentile = (transform(inside20$Overall, percentile = findInterval(inside20$Overall, quantile(inside20$Overall, probs = seq(0, .9, by = .1)))))-1
+outside20$Percentile = (transform(outside20$Overall, percentile = findInterval(outside20$Overall, quantile(outside20$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside21$Percentile = (transform(inside21$Overall, percentile = findInterval(inside21$Overall, quantile(inside21$Overall, probs = seq(0, .9, by = .1)))))-1
+outside21$Percentile = (transform(outside21$Overall, percentile = findInterval(outside21$Overall, quantile(outside21$Overall, probs = seq(0, .9, by = .1)))))-1
+
+inside22$Percentile = (transform(inside22$Overall, percentile = findInterval(inside22$Overall, quantile(inside22$Overall, probs = seq(0, .9, by = .1)))))-1
+outside22$Percentile = (transform(outside22$Overall, percentile = findInterval(outside22$Overall, quantile(outside22$Overall, probs = seq(0, .9, by = .1)))))-1
+```
+
+```{r}
+writing to csv
+write.csv(inside14, file = 'inside14.csv', row.names = TRUE)
+write.csv(inside15, file = 'inside15.csv', row.names = TRUE)
+write.csv(inside16, file = 'inside16.csv', row.names = TRUE)
+write.csv(inside17, file = 'inside17.csv', row.names = TRUE)
+write.csv(inside18, file = 'inside18.csv', row.names = TRUE)
+write.csv(inside19, file = 'inside19.csv', row.names = TRUE)
+write.csv(inside20, file = 'inside20.csv', row.names = TRUE)
+write.csv(inside21, file = 'inside21.csv', row.names = TRUE)
+write.csv(inside22, file = 'inside22.csv', row.names = TRUE)
+write.csv(outside14, file = 'outside14.csv', row.names=TRUE)
+write.csv(outside15, file = 'outside15.csv', row.names = TRUE)
+write.csv(outside16, file = 'outside16.csv', row.names = TRUE)
+write.csv(outside17, file = 'outside17.csv', row.names = TRUE)
+write.csv(outside18, file = 'outside18.csv', row.names = TRUE)
+write.csv(outside19, file = 'outside19.csv', row.names = TRUE)
+write.csv(outside20, file = 'outside20.csv', row.names = TRUE)
+write.csv(outside21, file = 'outside21.csv', row.names = TRUE)
+write.csv(outside22, file = 'outside22.csv', row.names = TRUE)
+
+```
+
+
+removing madden specific data, its taking up space
+```{r}
+rm(m14)
+rm(m15)
+rm(m16)
+rm(m17)
+rm(m18)
+rm(m19)
+rm(m20)
+rm(m21)
+rm(m22)
+```
+
+Reading data back in after using Excel
+At this point, we have offensive line inside/outside and defensive line inside/outside
+i average each year/percentile group's fantasy points, and apply that to the offensive line
+
+reimport d-line data
+```{r}
+i_d_14 = read.csv("inside14.csv")
+i_d_15 = read.csv("inside15.csv")
+i_d_16 = read.csv("inside16.csv")
+i_d_17 = read.csv("inside17.csv")
+#for some reason hes N/A so he gets a 0
+i_d_17$Fantasy.Avg[i_d_17$Name == "Stefan Charles"] = 0
+i_d_17$Fantasy.Avg = as.numeric(i_d_17$Fantasy.Avg)
+
+i_d_18 = read.csv("inside18.csv")
+i_d_19 = read.csv("inside19.csv")
+i_d_20 = read.csv("inside20.csv")
+i_d_21 = read.csv("inside21.csv")
+i_d_22 = read.csv("inside22.csv")
+
+o_d_14 = read.csv("outside14.csv")
+o_d_15 = read.csv("outside15.csv")
+o_d_16 = read.csv("outside16.csv")
+o_d_17 = read.csv("outside17.csv")
+o_d_18 = read.csv("outside18.csv")
+o_d_19 = read.csv("outside19.csv")
+o_d_20 = read.csv("outside20.csv")
+o_d_21 = read.csv("outside21.csv")
+o_d_22 = read.csv("outside22.csv")
+
+```
+
+
+Applying fantasy points from D-Line to O-Line
+```{r}
+
+temp = data.frame(aggregate(i_d_14$Fantasy.Avg ~ i_d_14$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_14 = merge(x = i_o_14, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_14$Fantasy.Avg ~ o_d_14$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_14 = merge(x = o_o_14, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_15$Fantasy.Avg ~ i_d_15$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_15 = merge(x = i_o_15, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_15$Fantasy.Avg ~ o_d_15$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_15 = merge(x = o_o_15, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_16$Fantasy.Avg ~ i_d_16$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_16 = merge(x = i_o_16, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_16$Fantasy.Avg ~ o_d_16$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_16 = merge(x = o_o_16, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_17$Fantasy.Avg ~ i_d_17$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_17 = merge(x = i_o_17, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_17$Fantasy.Avg ~ o_d_17$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_17 = merge(x = o_o_17, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_18$Fantasy.Avg ~ i_d_18$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_18 = merge(x = i_o_18, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_18$Fantasy.Avg ~ o_d_18$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_18 = merge(x = o_o_18, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_19$Fantasy.Avg ~ i_d_19$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_19 = merge(x = i_o_19, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_19$Fantasy.Avg ~ o_d_19$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_19 = merge(x = o_o_19, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_20$Fantasy.Avg ~ i_d_20$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_20 = merge(x = i_o_20, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_20$Fantasy.Avg ~ o_d_20$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_20 = merge(x = o_o_20, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_21$Fantasy.Avg ~ i_d_21$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_21 = merge(x = i_o_21, y = temp, by = "Percentile")
+
+temp = data.frame(aggregate(o_d_21$Fantasy.Avg ~ o_d_21$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+o_o_21 = merge(x = o_o_21, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(i_d_22$Fantasy.Avg ~ i_d_22$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile"
+i_o_22 = merge(x = i_o_22, y = temp, by = "Percentile")
+
+
+temp = data.frame(aggregate(o_d_22$Fantasy.Avg ~ o_d_22$Percentile.percentile, FUN = mean))
+colnames(temp)[1] = "Percentile.percentile"
+o_o_22 = merge(x = o_d_22, y = temp, by = "Percentile.percentile")
+
+```
+
+
+Combining Offense, Defense, Linemen
+```{r}
+#14
+player14 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player14 = rbind(player14, i_d_14[,c("Name", "Position", "Fantasy.Avg")])
+player14 = rbind(player14, o_d_14[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_14$Name = paste(i_o_14$First.Name, i_o_14$Last.Name, sep = " ")
+i_o_14$Fantasy.Avg = i_o_14$i_d_14.Fantasy.Avg
+player14 = rbind(player14, i_o_14[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_14$Name = paste(o_o_14$First.Name, o_o_14$Last.Name, sep = " ")
+o_o_14$Fantasy.Avg = o_o_14$o_d_14.Fantasy.Avg
+player14 = rbind(player14, o_o_14[,c("Name", "Position", "Fantasy.Avg")])
+
+offense14 = read.csv("Offense_14.csv")
+offense14$Name = offense14$Player
+offense14$Position = offense14$Pos
+offense14$Fantasy.Avg = offense14$AVG
+player14 = rbind(player14, offense14[,c("Name", "Position", "Fantasy.Avg")])
+
+defense14 = read.csv("Defense_14.csv")
+defense14$Name = defense14$Player
+defense14$Position = defense14$Pos
+defense14$Fantasy.Avg = defense14$AVG
+player14 = rbind(player14, defense14[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player14, file = 'player14.csv', row.names = TRUE)
+```
+
+```{r}
+#15
+player15 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player15 = rbind(player15, i_d_15[,c("Name", "Position", "Fantasy.Avg")])
+player15 = rbind(player15, o_d_15[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_15$Name = paste(i_o_15$First.Name, i_o_15$Last.Name, sep = " ")
+i_o_15$Fantasy.Avg = i_o_15$i_d_15.Fantasy.Avg
+player15 = rbind(player15, i_o_15[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_15$Name = paste(o_o_15$First.Name, o_o_15$Last.Name, sep = " ")
+o_o_15$Fantasy.Avg = o_o_15$o_d_15.Fantasy.Avg
+player15 = rbind(player15, o_o_15[,c("Name", "Position", "Fantasy.Avg")])
+
+offense15 = read.csv("Offense_15.csv")
+offense15$Name = offense15$Player
+offense15$Position = offense15$Pos
+offense15$Fantasy.Avg = offense15$AVG
+player15 = rbind(player15, offense15[,c("Name", "Position", "Fantasy.Avg")])
+
+defense15 = read.csv("Defense_15.csv")
+defense15$Name = defense15$Player
+defense15$Position = defense15$Pos
+defense15$Fantasy.Avg = defense15$AVG
+player15 = rbind(player15, defense15[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player15, file = 'player15.csv', row.names = TRUE)
+```
+
+
+```{r}
+#16
+player16 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player16 = rbind(player16, i_d_16[,c("Name", "Position", "Fantasy.Avg")])
+player16 = rbind(player16, o_d_16[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_16$Name = paste(i_o_16$First.Name, i_o_16$Last.Name, sep = " ")
+i_o_16$Fantasy.Avg = i_o_16$i_d_16.Fantasy.Avg
+player16 = rbind(player16, i_o_16[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_16$Name = paste(o_o_16$First.Name, o_o_16$Last.Name, sep = " ")
+o_o_16$Fantasy.Avg = o_o_16$o_d_16.Fantasy.Avg
+player16 = rbind(player16, o_o_16[,c("Name", "Position", "Fantasy.Avg")])
+
+offense16 = read.csv("Offense_16.csv")
+offense16$Name = offense16$Player
+offense16$Position = offense16$Pos
+offense16$Fantasy.Avg = offense16$AVG
+player16 = rbind(player16, offense16[,c("Name", "Position", "Fantasy.Avg")])
+
+defense16 = read.csv("Defense_16.csv")
+defense16$Name = defense16$Player
+defense16$Position = defense16$Pos
+defense16$Fantasy.Avg = defense16$AVG
+player16 = rbind(player16, defense16[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player16, file = 'player16.csv', row.names = TRUE)
+```
+
+```{r}
+#17
+player17 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player17 = rbind(player17, i_d_17[,c("Name", "Position", "Fantasy.Avg")])
+player17 = rbind(player17, o_d_17[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_17$Name = paste(i_o_17$First.Name, i_o_17$Last.Name, sep = " ")
+i_o_17$Fantasy.Avg = i_o_17$i_d_17.Fantasy.Avg
+player17 = rbind(player17, i_o_17[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_17$Name = paste(o_o_17$First.Name, o_o_17$Last.Name, sep = " ")
+o_o_17$Fantasy.Avg = o_o_17$o_d_17.Fantasy.Avg
+player17 = rbind(player17, o_o_17[,c("Name", "Position", "Fantasy.Avg")])
+
+offense17 = read.csv("Offense_17.csv")
+offense17$Name = offense17$Player
+offense17$Position = offense17$Pos
+offense17$Fantasy.Avg = offense17$AVG
+player17 = rbind(player17, offense17[,c("Name", "Position", "Fantasy.Avg")])
+
+defense17 = read.csv("Defense_17.csv")
+defense17$Name = defense17$Player
+defense17$Position = defense17$Pos
+defense17$Fantasy.Avg = defense17$AVG
+player17 = rbind(player17, defense17[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player17, file = 'player17.csv', row.names = TRUE)
+```
+
+```{r}
+#18
+player18 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player18 = rbind(player18, i_d_18[,c("Name", "Position", "Fantasy.Avg")])
+player18 = rbind(player18, o_d_18[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_18$Name = paste(i_o_18$First.Name, i_o_18$Last.Name, sep = " ")
+i_o_18$Fantasy.Avg = i_o_18$i_d_18.Fantasy.Avg
+player18 = rbind(player18, i_o_18[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_18$Name = paste(o_o_18$First.Name, o_o_18$Last.Name, sep = " ")
+o_o_18$Fantasy.Avg = o_o_18$o_d_18.Fantasy.Avg
+player18 = rbind(player18, o_o_18[,c("Name", "Position", "Fantasy.Avg")])
+
+offense18 = read.csv("Offense_18.csv")
+offense18$Name = offense18$Player
+offense18$Position = offense18$Pos
+offense18$Fantasy.Avg = offense18$AVG
+player18 = rbind(player18, offense18[,c("Name", "Position", "Fantasy.Avg")])
+
+defense18 = read.csv("Defense_18.csv")
+defense18$Name = defense18$Player
+defense18$Position = defense18$Pos
+defense18$Fantasy.Avg = defense18$AVG
+player18 = rbind(player18, defense18[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player18, file = 'player18.csv', row.names = TRUE)
+```
+
+```{r}
+#19
+player19 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player19 = rbind(player19, i_d_19[,c("Name", "Position", "Fantasy.Avg")])
+player19 = rbind(player19, o_d_19[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_19$Fantasy.Avg = i_o_19$i_d_19.Fantasy.Avg
+player19 = rbind(player19, i_o_19[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_19$Fantasy.Avg = o_o_19$o_d_19.Fantasy.Avg
+player19 = rbind(player19, o_o_19[,c("Name", "Position", "Fantasy.Avg")])
+
+offense19 = read.csv("Offense_19.csv")
+offense19$Name = offense19$Player
+offense19$Position = offense19$Pos
+offense19$Fantasy.Avg = offense19$AVG
+player19 = rbind(player19, offense19[,c("Name", "Position", "Fantasy.Avg")])
+
+defense19 = read.csv("Defense_19.csv")
+defense19$Name = defense19$Player
+defense19$Position = defense19$Pos
+defense19$Fantasy.Avg = defense19$AVG
+player19 = rbind(player19, defense19[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player19, file = 'player19.csv', row.names = TRUE)
+```
+
+```{r}
+#20
+player20 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player20 = rbind(player20, i_d_20[,c("Name", "Position", "Fantasy.Avg")])
+player20 = rbind(player20, o_d_20[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_20$Fantasy.Avg = i_o_20$i_d_20.Fantasy.Avg
+player20 = rbind(player20, i_o_20[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_20$Fantasy.Avg = o_o_20$o_d_20.Fantasy.Avg
+player20 = rbind(player20, o_o_20[,c("Name", "Position", "Fantasy.Avg")])
+
+offense20 = read.csv("Offense_20.csv")
+offense20$Name = offense20$Player
+offense20$Position = offense20$Pos
+offense20$Fantasy.Avg = offense20$AVG
+player20 = rbind(player20, offense20[,c("Name", "Position", "Fantasy.Avg")])
+
+defense20 = read.csv("Defense_20.csv")
+defense20$Name = defense20$Player
+defense20$Position = defense20$Pos
+defense20$Fantasy.Avg = defense20$AVG
+player20 = rbind(player20, defense20[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player20, file = 'player20.csv', row.names = TRUE)
+```
+
+```{r}
+#21
+player21 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player21 = rbind(player21, i_d_21[,c("Name", "Position", "Fantasy.Avg")])
+player21 = rbind(player21, o_d_21[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_21$Fantasy.Avg = i_o_21$i_d_21.Fantasy.Avg
+player21 = rbind(player21, i_o_21[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_21$Fantasy.Avg = o_o_21$o_d_21.Fantasy.Avg
+player21 = rbind(player21, o_o_21[,c("Name", "Position", "Fantasy.Avg")])
+
+offense21 = read.csv("Offense_21.csv")
+offense21$Name = offense21$Player
+offense21$Position = offense21$Pos
+offense21$Fantasy.Avg = offense21$AVG
+player21 = rbind(player21, offense21[,c("Name", "Position", "Fantasy.Avg")])
+
+defense21 = read.csv("Defense_21.csv")
+defense21$Name = defense21$Player
+defense21$Position = defense21$Pos
+defense21$Fantasy.Avg = defense21$AVG
+player21 = rbind(player21, defense21[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player21, file = 'player21.csv', row.names = TRUE)
+```
+
+```{r}
+#22
+player22 = data.frame( Name = character(0), Position = character(0), Fantasy.Avg = numeric(0) )
+player22 = rbind(player22, i_d_22[,c("Name", "Position", "Fantasy.Avg")])
+player22 = rbind(player22, o_d_22[,c("Name", "Position", "Fantasy.Avg")])
+
+i_o_22$Name = paste(i_o_22$FirstName, i_o_22$LastName, sep = " ")
+i_o_22$Fantasy.Avg = i_o_22$i_d_22.Fantasy.Avg
+player22 = rbind(player22, i_o_22[,c("Name", "Position", "Fantasy.Avg")])
+
+o_o_22$Fantasy.Avg = o_o_22$o_d_22.Fantasy.Avg
+player22 = rbind(player22, o_o_22[,c("Name", "Position", "Fantasy.Avg")])
+
+offense22 = read.csv("Offense_22.csv")
+offense22$Name = offense22$Player
+offense22$Position = offense22$Pos
+offense22$Fantasy.Avg = offense22$AVG
+player22 = rbind(player22, offense22[,c("Name", "Position", "Fantasy.Avg")])
+
+defense22 = read.csv("Defense_22.csv")
+defense22$Name = defense22$Player
+defense22$Position = defense22$Pos
+defense22$Fantasy.Avg = defense22$AVG
+player22 = rbind(player22, defense22[,c("Name", "Position", "Fantasy.Avg")])
+write.csv(player22, file = 'player22.csv', row.names = TRUE)
+```
+

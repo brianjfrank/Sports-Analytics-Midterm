@@ -1,0 +1,83 @@
+---
+title: "Midterm Project"
+output: 
+---
+importing data
+```{r}
+#loading in madden data
+library(dplyr)
+m14 = read.csv("Madden_14.csv")
+m15 = read.csv("Madden_15.csv")
+m16 = read.csv("Madden_16.csv")
+m17 = read.csv("Madden_17.csv")
+m18 = read.csv("Madden_18.csv")
+m19 = read.csv("Madden_19_1.csv")
+m20 = read.csv("Madden_20.csv")
+m21 = read.csv("Madden_21.csv")
+m22 = read.csv("Madden_22.csv")
+```
+
+
+getting rid of data I wont use
+```{r}
+#unfortunately have to clean data by hand
+m14 = m14[, c("First.Name", "Last.Name", "Position", "Overall")]
+m15 = m15[, c("First.Name", "Last.Name", "Position", "Overall")]
+m16 = m16[, c("First.Name", "Last.Name", "Position", "OVR")]
+m17 = m17[, c("First.Name", "Last.Name", "Position", "Overall")]
+m18 = m18[, c("First.Name", "Last.Name", "Position", "Overall")]
+m19 = m19[, c("Name", "Position", "Overall")]
+m20 = m20[, c("Name", "Position", "Overall")]
+m21 = m21[, c("Name", "Position", "Overall")]
+m22 = m22[, c("FirstName", "LastName", "Position", "OverallRating")]
+```
+
+
+FIltering out non linemen
+```{r}
+#filtering out non d-line
+inside_line = "DT"
+outside_line = c("LE", "RE")
+
+inside14 = m14[m14$Position %in% inside_line, ]
+outside14 = m14[m14$Position %in% outside_line, ]
+
+inside15 = m15[m15$Position %in% inside_line, ]
+outside15 = m15[m15$Position %in% outside_line, ]
+
+inside16 = m16[m16$Position %in% inside_line, ]
+outside16 = m16[m16$Position %in% outside_line, ]
+
+inside17 = m17[m17$Position %in% inside_line, ]
+outside17 = m17[m17$Position %in% outside_line, ]
+
+inside18 = m18[m18$Position %in% inside_line, ]
+outside18 = m18[m18$Position %in% outside_line, ]
+
+inside19 = m19[m19$Position %in% inside_line, ]
+outside19 = m19[m19$Position %in% outside_line, ]
+
+inside20 = m20[m20$Position %in% inside_line, ]
+outside20 = m20[m20$Position %in% outside_line, ]
+
+inside21 = m21[m21$Position %in% inside_line, ]
+outside21 = m21[m21$Position %in% outside_line, ]
+
+inside22 = m22[m22$Position %in% inside_line, ]
+outside22 = m22[m22$Position %in% outside_line, ]
+
+```
+
+
+adding percentiles
+```{r}
+inside14$Percentile = 0
+Percentile = quantile(inside14$Overall, probs = seq(0,1,by = .1))
+
+
+
+```
+
+
+
+

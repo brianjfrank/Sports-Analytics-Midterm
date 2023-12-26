@@ -1,0 +1,34 @@
+scraping birthdays
+
+```{r}
+library(xml2)
+library(rvest)
+
+birthdays = data.frame("Player" = character(0), "Pos" = character(0), "Born" = character(0), "From" = character(0), "To" = character(0))
+
+```
+
+Big Loop
+```{r}
+for (month in 1:12) {
+  # Iterate through days (1 to 31)
+  for (day in 1:31) {    
+    print(paste(month, day))
+    url <- paste("https://www.pro-football-reference.com/friv/birthdays.cgi?month=", month, "&day=", day, sep = "")
+    page = read_html(url) #Creates an html document from URL
+    table = html_table(page, fill = TRUE) #Parses tables into data frames
+    
+    temp = table[[1]]
+    temp = temp[2:nrow(temp),c(2,3,4,5,6)]
+    birthdays = rbind(birthdays, temp)
+    Sys.sleep(2)
+
+  }
+}
+birthdays = as.data.frame(birthdays)
+names(birthdays) = c("Player", "Pos", "Born", "From", "To")
+birthdays$To = as.numeric(birthdays$To)
+birthdays = birthdays[birthdays$To >= 2013,]
+write.csv(birthdays, file = "birthdays.csv", row.names = TRUE)
+```
+

@@ -1,0 +1,200 @@
+
+Importing Player Data
+
+Import method
+```{r}
+import <- function(file, year) {
+  df = read.csv(file, header = TRUE)
+  df = subset(df, df$Age != "#N/A")
+  df$Age = as.numeric(df$Age)
+  df$Age = (year - df$Age)
+  df = df[df$Age >= 20,]
+}
+```
+
+Importing Data
+```{r}
+player14 = import("player14.csv", 2014)
+player15 = import("player15.csv", 2015)
+player16 = import("player16.csv", 2016)
+player17 = import("player17.csv", 2017)
+player18 = import("player18.csv", 2018)
+player19 = import("player19.csv", 2019)
+player20 = import("player20.csv", 2020)
+player21 = import("player21.csv", 2021)
+player22 = import("player22.csv", 2022)
+
+library(ggplot2)
+library(dplyr)
+```
+
+Creating Positional Dataframe Method
+```{r}
+make_positional_df <- function(pos, df_name){
+  df_name = player14[player14$Position == pos,]
+  df_name = rbind(df_name, player15[player15$Position == pos,])
+  df_name = rbind(df_name, player16[player16$Position == pos,])
+  df_name = rbind(df_name, player17[player17$Position == pos,])
+  # Repeat this for player IDs from 18 to 22
+  df_name = rbind(df_name, player18[player18$Position == pos,])
+  df_name = rbind(df_name, player19[player19$Position == pos,])
+  df_name = rbind(df_name, player20[player20$Position == pos,])
+  df_name = rbind(df_name, player21[player21$Position == pos,])
+  df_name = rbind(df_name, player22[player22$Position == pos,])
+}
+```
+
+Names of all unique positions, just for reference
+```{r}
+positions = unique(c(player14$Position, player15$Position, player16$Position, player17$Position, player18$Position, 
+                     player19$Position, player20$Position, player21$Position, player22$Position))
+positions
+```
+
+Quarterback
+
+```{r}
+qb_df = make_positional_df("QB", qb_df)
+qbmodel <- lm(Fantasy.Avg ~ Age, data = qb_df)
+summary(qbmodel)
+
+ggplot(data = qb_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+
+```
+
+Running Back
+
+```{r}
+
+rb_df = make_positional_df("RB", rb_df)
+rbmodel = lm(Fantasy.Avg ~ Age, data = rb_df)
+summary(rbmodel)
+
+ggplot(data = rb_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+
+```
+
+Wide Reciever
+
+```{r}
+wr_df = make_positional_df("WR", "wr_df")
+wrmodel = lm(data = wr_df, Fantasy.Avg ~ Age)
+summary(wrmodel)
+
+ggplot(data = wr_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+
+```
+
+Tight End
+
+```{r}
+te_df = make_positional_df("TE", "te_df")
+temodel = lm(data = te_df, Fantasy.Avg ~ Age)
+summary(temodel)
+
+ggplot(data = te_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+
+
+```
+
+Centers
+
+```{r}
+c_df = make_positional_df("C", "c_df")
+cmodel = lm(data = c_df, Fantasy.Avg ~ Age)
+summary(cmodel)
+
+ggplot(data = c_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
+
+Guards
+
+```{r}
+lg_df = make_positional_df("LG", lg_df)
+rg_df = make_positional_df("RG", rg_df)
+g_df = rbind(lg_df, rg_df)
+
+gmodel = lm(data = g_df, Fantasy.Avg ~ Age)
+summary(gmodel)
+
+ggplot(data = g_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+
+```
+
+Offensive Tackles
+
+```{r}
+lot_df = make_positional_df("LT", lot_df)
+rot_df = make_positional_df("RT", rot_df)
+ot_df = rbind(lot_df, rot_df)
+
+otmodel = lm(data = ot_df, Fantasy.Avg ~ Age)
+summary(otmodel)
+
+ggplot(data = ot_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
+
+Defensive Tackles
+
+```{r}
+dt_df = make_positional_df("DT", "dt_df")
+dtmodel = lm(data = dt_df, Fantasy.Avg ~ Age)
+summary(dtmodel)
+
+ggplot(data = dt_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
+
+Defensive End
+
+```{r}
+lde = make_positional_df("LE", lde)
+rde = make_positional_df("RE", rde)
+de_df = rbind(lde, rde)
+de_df = rbind(de_df, make_positional_df("DE", de_df))
+
+demodel = lm(data = de_df, Fantasy.Avg ~ Age)
+summary(demodel)
+ggplot(data = de_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
+
+Linebacker
+
+```{r}
+lb_df = make_positional_df("LB", "lb_df")
+lbmodel = lm(data = lb_df, Fantasy.Avg ~ Age)
+summary(lbmodel)
+
+ggplot(data = lb_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
+
+Safety
+
+```{r}
+s_df = make_positional_df("S", "s_df")
+smodel = lm(data = s_df, Fantasy.Avg ~ Age)
+summary(smodel)
+
+ggplot(data = s_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
+
+Defensive Backs
+
+```{r}
+cb_df = make_positional_df("CB", cb_df)
+db_df = rbind(cb_df, make_positional_df("DB", db_df))
+dbmodel = lm(data = db_df, Fantasy.Avg ~ Age)
+summary(dbmodel)
+
+ggplot(data = db_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+
+```
+
+Kickers
+
+```{r}
+k_df = make_positional_df("K", "k_df")
+kmodel = lm(data = k_df, Fantasy.Avg ~ Age)
+summary(kmodel)
+
+ggplot(data = k_df, aes(x = Age, y = Fantasy.Avg)) + geom_line(stat = "summary", fun = "median", linetype = "solid", size = 1)
+```
